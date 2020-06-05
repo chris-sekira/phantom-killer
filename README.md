@@ -1,5 +1,5 @@
 # phantom-killer
-A simple Powershell script to safely close zombie processes that have been abandoned while leaving other processes ()(with active parents) still running.
+A simple Powershell script to safely close zombie processes that have been abandoned while leaving other processes (with active parents) still running.
 
 ## About
 Sometimes programs create child processes, and sometimes those parent processes die without cleaning up their children -- producing zombies! Then you're stuck wondering why you're magically out of RAM, or why you can't delete a folder because _"child.exe is being used by another program"_.
