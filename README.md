@@ -1,12 +1,27 @@
 # phantom-killer
-A simple Powershell script to safely close zombie processes that have been abandoned while leaving other processes (with active parents) still running.
+[phantom-killer.ps1](powershell/phantom-killer.ps1) is a simple cross-platform Powershell script to safely close lingering (zombie) processes that have been abandoned by their previously-closed parent process. This script only kills processes without a parent, while leaving other instances alone.
 
 ## About
+### Purpose
 Sometimes programs create child processes, and sometimes those parent processes die without cleaning up their children -- producing zombies! Then you're stuck wondering why you're magically out of RAM, or why you can't delete a folder because _"child.exe is being used by another program"_.
 
 Instead of having to open Task Manager, find the process, and terminate them manually, this script will do it for you!
 
-## Why is it called "Phantom Killer"?
+### Compatibility
+This script works with both Windows "Desktop" Powershell and the newer Powershell "Core" on Windows/Linux without any additional dependencies. It has been specifically verified with:
+- "Desktop" Powershell 5.1
+- Powershell Core 6.0
+- Powershell Core 6.1
+- Powershell 7.0 (LTS)
+
+#### Note:
+Prior to Powershell 6.0, the `Get-Process` cmdlet lacked the ability to return information about the parent process, requiring a lengthy workaround using `Get-CimInstance` calls. Starting with Powershell 6.0, all of the logic can be reduced down to a simple 1-line statement of
+```powershell
+# $ProcessName contains the name of the zombie process (ie: phantomjs)
+Get-Process -Name $ProcessName -ErrorAction SilentlyContinue | Where-Object { ($null -eq $_.Parent) -or $($_.Parent.HasExited) }
+```
+
+### Why is it called "Phantom Killer"?
 Because 95% of the times that I use this script, it's for rogue `phantomjs.exe` processes.
 
 ## Usage
